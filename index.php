@@ -11,6 +11,8 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <title>Главная</title>
+    <!-- Если стилей пока нет, эту строку можно убрать -->
+    <!-- <link rel="stylesheet" href="assets/style.css"> -->
 </head>
 <body>
     <h1>Совместные покупки</h1>
@@ -123,7 +125,6 @@ $stmt->execute([$user_id]);
 $my_groups = $stmt->fetchAll();
 
 $current_group = null;
-// Здесь мы больше не выбираем участников через PHP
 
 if (isset($_GET['group_id'])) {
     $gid = (int)$_GET['group_id'];
@@ -158,6 +159,7 @@ if (isset($_GET['group_id'])) {
 
     <table width="100%" border="0">
         <tr valign="top">
+            <!-- ЛЕВАЯ КОЛОНКА -->
             <td width="30%">
                 <h3>Мои группы</h3>
                 <ul>
@@ -187,6 +189,7 @@ if (isset($_GET['group_id'])) {
                 </form>
             </td>
 
+            <!-- ПРАВАЯ КОЛОНКА -->
             <td width="70%" style="padding-left: 20px; border-left: 1px solid #ccc;">
                 <?php if ($current_group): ?>
                     
@@ -197,7 +200,6 @@ if (isset($_GET['group_id'])) {
                         <strong style="background: #eee; padding: 2px 5px;"><?= $current_group['invite_code'] ?></strong>
                     </p>
 
-                    <!-- ТЕПЕРЬ УЧАСТНИКИ ЗАГРУЖАЮТСЯ СЮДА ЧЕРЕЗ JS -->
                     <p>
                         <b>Участники:</b> 
                         <span id="members-list">Загрузка...</span>
@@ -220,11 +222,11 @@ if (isset($_GET['group_id'])) {
                     <hr>
 
                     <h3>Список покупок:</h3>
-                    <div>
-                        <input type="text" id="newItemInput" placeholder="Что купить?">
-                        <button type="button" id="addItemBtn">Добавить</button>
+                    <div style="margin-bottom: 20px;">
+                        <input type="text" id="newItemInput" placeholder="Что купить?" style="padding: 8px; width: 300px; border: 1px solid #ddd; border-radius: 4px;">
+                        <button type="button" id="addItemBtn" style="padding: 8px 15px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">Добавить</button>
                     </div>
-                    
+
                     <div id="shoppingList" style="margin-top: 20px;">
                         Загрузка списка...
                     </div>
@@ -232,12 +234,14 @@ if (isset($_GET['group_id'])) {
                     <input type="hidden" id="activeGroupId" value="<?= $current_group['id'] ?>">
 
                 <?php else: ?>
+                    <!-- ВОТ ЭТОГО БЛОКА НЕ ХВАТАЛО -->
                     <p>← Выберите группу слева или создайте новую.</p>
                 <?php endif; ?>
             </td>
         </tr>
     </table>
 
+    <!-- Подключаем JavaScript -->
     <script src="assets/app.js"></script>
 
 </body>

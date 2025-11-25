@@ -37,3 +37,9 @@ CREATE TABLE `items` (
   FOREIGN KEY (`group_id`) REFERENCES `groups`(`id`) ON DELETE CASCADE,
   FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Добавляем индексы для улучшения производительности
+CREATE INDEX idx_items_group_id ON items(group_id);
+CREATE INDEX idx_items_is_bought ON items(is_bought);
+CREATE INDEX idx_group_members_user_id ON group_members(user_id);
+CREATE INDEX idx_group_members_group_id ON group_members(group_id);

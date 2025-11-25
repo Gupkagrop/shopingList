@@ -1,5 +1,5 @@
 <?php
-// api/get_members.php
+// api/get_items.php
 require '../db.php';
 
 header('Content-Type: application/json');
@@ -13,28 +13,32 @@ $user_id = $_SESSION['user_id'];
 $group_id = (int)$_GET['group_id'];
 
 try {
-    // 1. Проверка безопасности: состоит ли текущий юзер в этой группе?
+    // Проверка доступа к группе
     $stmtCheck = $pdo->prepare("SELECT 1 FROM group_members WHERE user_id = ? AND group_id = ?");
     $stmtCheck->execute([$user_id, $group_id]);
     
     if (!$stmtCheck->fetch()) {
-        // Если не состоит — отдаем пустой список
         echo json_encode([]);
         exit;
     }
 
-    // 2. Получаем список имен участников
+    // Получаем товары с информацией о пользователе
     $stmt = $pdo->prepare("
-        SELECT u.username 
-        FROM users u 
-        JOIN group_members gm ON u.id = gm.user_id 
-        WHERE gm.group_id = ?
-        ORDER BY u.username ASC
+        SELECT 
+            i.id,
+            i.name,
+            i.is_bought,
+            i.created_at,
+            u.username as added_by
+        FROM items i
+        JOIN users u ON i.user_id = u.id
+        WHERE i.group_id = ?
+        ORDER BY i.is_bought ASC, i.created_at DESC
     ");
     $stmt->execute([$group_id]);
-    $members = $stmt->fetchAll(PDO::FETCH_COLUMN);
+    $items = $stmt->fetchAll();
 
-    echo json_encode($members);
+    echo json_encode($items);
 
 } catch (PDOException $e) {
     echo json_encode([]);
